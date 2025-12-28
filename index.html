@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>숭례문 프로파일링</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #eee;
+    text-align: center;
+    padding: 30px;
+}
+input, button {
+    padding: 10px;
+    font-size: 16px;
+}
+#output {
+    margin-top: 20px;
+    border: 1px solid #555;
+    padding: 15px;
+    min-height: 80px;
+}
+button {
+    margin: 5px;
+}
+</style>
+</head>
+<body>
+
+<h1>🕵️ 숭례문 방화 사건 프로파일링</h1>
+<p>질문을 입력하세요. (힌트는 1회만 사용 가능)</p>
+
+<input id="question" placeholder="질문 입력" size="40">
+<br><br>
+<button onclick="ask()">질문하기</button>
+<button onclick="hint()">힌트 사용</button>
+
+<div id="output"></div>
+
+<script>
+let hintUsed = false;
+
+function ask() {
+    const q = document.getElementById("question").value.toLowerCase();
+    let answer = "그 질문에 해당하는 정보는 없습니다.";
+
+    if (q.includes("시간") || q.includes("언제")) {
+        answer = "사건은 밤 12시 25분에 발생했습니다.";
+    }
+    else if (q.includes("숭례문") || q.includes("구조")) {
+        answer = "범인은 숭례문의 구조와 접근 방법을 알고 있었습니다.";
+    }
+    else if (q.includes("동기") || q.includes("분노")) {
+        answer = "일부 용의자는 시스템에 대한 강한 좌절과 분노를 보였습니다.";
+    }
+    else if (q.includes("문자") || q.includes("메시지")) {
+        answer = "사건 전, 감정적으로 불안한 문자가 확인됩니다.";
+    }
+    else if (q.includes("cctv") || q.includes("택시") || q.includes("동선")) {
+        answer = "사건 전 숭례문으로 이동한 인물이 CCTV에 포착되었습니다.";
+    }
+    else if (q.includes("전문") || q.includes("불") || q.includes("소방")) {
+        answer = "범인은 화재와 방재 시스템에 대한 지식을 갖고 있었습니다.";
+    }
+
+    document.getElementById("output").innerText = answer;
+}
+
+function hint() {
+    if (!hintUsed) {
+        document.getElementById("output").innerText =
+        "결정적 힌트: 숭례문 CCTV에 찍힌 인물의 이동 동선이 특정 소방관의 거주지와 일치합니다.";
+        hintUsed = true;
+    } else {
+        document.getElementById("output").innerText =
+        "힌트는 이미 사용했습니다.";
+    }
+}
+</script>
+
+</body>
+</html>
+
