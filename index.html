@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>숭례문 프로파일링 체험</title>
+<title>숭례문 프로파일링</title>
 
 <style>
 body {
@@ -64,11 +64,12 @@ button {
     <div class="message bot">
 🕵️ 숭례문 화재 사건 프로파일링
 
-시간: 밤 12시 25분  
-장소: 숭례문  
+한밤중, 국보 숭례문에서 방화로 추정되는 화재가 발생했습니다.  
+당신은 질문을 통해 단서를 수집하고  
+사건의 전말을 추리해야 합니다.
 
-질문을 통해 단서를 수집하세요.  
-힌트는 단 <b>1회</b>만 사용할 수 있습니다.
+힌트는 <b>단 1회</b>만 사용할 수 있습니다.  
+질문은 <b>한 번에 하나씩</b>만 가능합니다.
     </div>
 </div>
 
@@ -95,6 +96,15 @@ function send() {
     const q = input.value.trim();
     if (!q) return;
 
+    // ❗ 한 번에 질문 1개만 허용
+    const questionCount = (q.match(/\?/g) || []).length;
+    if (questionCount >= 2) {
+        addMessage(q, "user");
+        addMessage("질문은 한 번에 하나씩만 해주세요.", "bot");
+        input.value = "";
+        return;
+    }
+
     addMessage(q, "user");
     input.value = "";
 
@@ -102,22 +112,22 @@ function send() {
     let answer = "그 질문에 해당하는 단서는 확인되지 않았습니다.";
 
     if (lower.includes("시간") || lower.includes("언제")) {
-        answer = "화재는 밤 12시 25분에 발생했습니다.";
+        answer = "화재는 밤 12시 25분경 발생한 것으로 확인됩니다.";
     }
     else if (lower.includes("장소") || lower.includes("숭례문")) {
-        answer = "숭례문 내부 구조를 잘 아는 사람에게 유리한 장소입니다.";
+        answer = "사건 장소는 숭례문이며, 내부 구조를 아는 사람에게 유리합니다.";
     }
     else if (lower.includes("사다리") || lower.includes("침입")) {
-        answer = "범인은 사다리를 이용해 몰래 침입한 것으로 보입니다.";
+        answer = "범인은 사다리를 이용해 외부에서 몰래 접근했습니다.";
     }
     else if (lower.includes("동기") || lower.includes("불만")) {
-        answer = "여러 용의자가 문화재 관리 시스템에 불만을 가지고 있었습니다.";
+        answer = "일부 용의자는 문화재 관리 시스템에 강한 불만을 가지고 있었습니다.";
     }
     else if (lower.includes("문자") || lower.includes("메시지")) {
         answer = "사건 전 감정적으로 격한 표현이 담긴 문자가 확인됩니다.";
     }
     else if (lower.includes("cctv") || lower.includes("택시") || lower.includes("동선")) {
-        answer = "사건 직전과 직후, 수상한 이동 동선이 CCTV에 포착되었습니다.";
+        answer = "사건 전후로 수상한 이동 동선이 CCTV에 포착되었습니다.";
     }
     else if (lower.includes("소방") || lower.includes("불") || lower.includes("전문")) {
         answer = "범인은 화재와 방재 시스템에 대한 이해가 있었을 가능성이 있습니다.";
@@ -132,7 +142,7 @@ function useHint() {
     hintUsed = true;
 
     addMessage(
-        "힌트: 모든 단서는 '누가 가장 쉽게 접근할 수 있었는가'와 연결됩니다.",
+        "힌트: 범인은 사건 장소에 접근하는 데 있어 특별한 제약이 적은 인물일 수 있습니다.",
         "bot"
     );
 
@@ -146,4 +156,3 @@ function useHint() {
 
 </body>
 </html>
-
