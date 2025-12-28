@@ -3,82 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <title>숭례문 프로파일링</title>
+
 <style>
 body {
+    margin: 0;
+    background-color: #0f0f0f;
+    color: #eaeaea;
     font-family: Arial, sans-serif;
-    background: #111;
-    color: #eee;
-    text-align: center;
-    padding: 30px;
 }
-input, button {
+
+#chat {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    padding-bottom: 120px;
+}
+
+.message {
+    margin: 12px 0;
+    line-height: 1.6;
+}
+
+.user {
+    text-align: right;
+    color: #9cdcfe;
+}
+
+.bot {
+    text-align: left;
+    color: #d4d4d4;
+}
+
+#inputBox {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #111;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+input {
+    width: 70%;
     padding: 10px;
     font-size: 16px;
 }
-#output {
-    margin-top: 20px;
-    border: 1px solid #555;
-    padding: 15px;
-    min-height: 80px;
-}
+
 button {
-    margin: 5px;
+    padding: 10px;
+    font-size: 16px;
+    margin-left: 5px;
 }
 </style>
 </head>
+
 <body>
 
-<h1>🕵️ 숭례문 방화 사건 프로파일링</h1>
-<p>질문을 입력하세요. (힌트는 1회만 사용 가능)</p>
+<div id="chat">
+    <div class="message bot">
+        🕵️ 사건 개요<br>
+        밤 12시 25분, 숭례문에서 화재가 발생했습니다.<br>
+        질문을 통해 단서를 수집하고 범인을 추리하세요.<br>
+        힌트는 단 <b>1회</b>만 사용할 수 있습니다.
+    </div>
+</div>
 
-<input id="question" placeholder="질문 입력" size="40">
-<br><br>
-<button onclick="ask()">질문하기</button>
-<button onclick="hint()">힌트 사용</button>
-
-<div id="output"></div>
+<div id="inputBox">
+    <input id="userInput" placeholder="질문을 입력하세요">
+    <button onclick="send()">전송</button>
+    <button onclick="useHint()">힌트</button>
+</div>
 
 <script>
 let hintUsed = false;
 
-function ask() {
-    const q = document.getElementById("question").value.toLowerCase();
-    let answer = "그 질문에 해당하는 정보는 없습니다.";
-
-    if (q.includes("시간") || q.includes("언제")) {
-        answer = "사건은 밤 12시 25분에 발생했습니다.";
-    }
-    else if (q.includes("숭례문") || q.includes("구조")) {
-        answer = "범인은 숭례문의 구조와 접근 방법을 알고 있었습니다.";
-    }
-    else if (q.includes("동기") || q.includes("분노")) {
-        answer = "일부 용의자는 시스템에 대한 강한 좌절과 분노를 보였습니다.";
-    }
-    else if (q.includes("문자") || q.includes("메시지")) {
-        answer = "사건 전, 감정적으로 불안한 문자가 확인됩니다.";
-    }
-    else if (q.includes("cctv") || q.includes("택시") || q.includes("동선")) {
-        answer = "사건 전 숭례문으로 이동한 인물이 CCTV에 포착되었습니다.";
-    }
-    else if (q.includes("전문") || q.includes("불") || q.includes("소방")) {
-        answer = "범인은 화재와 방재 시스템에 대한 지식을 갖고 있었습니다.";
-    }
-
-    document.getElementById("output").innerText = answer;
+function addMessage(text, cls) {
+    const chat = document.getElementById("chat");
+    const div = document.createElement("div");
+    div.className = "message " + cls;
+    div.innerText = text;
+    chat.appendChild(div);
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
-function hint() {
-    if (!hintUsed) {
-        document.getElementById("output").innerText =
-        "결정적 힌트: 숭례문 CCTV에 찍힌 인물의 이동 동선이 특정 소방관의 거주지와 일치합니다.";
-        hintUsed = true;
-    } else {
-        document.getElementById("output").innerText =
-        "힌트는 이미 사용했습니다.";
+function send() {
+    const input = document.getElementById("userInput");
+    const q = input.value.trim();
+    if (!q) return;
+
+    addMessage(q, "user");
+    input.value = "";
+
+    let answer = "그 질문에 해당하는 단서는 확인되지 않았습니다.";
+    const lower = q.toLowerCase();
+
+    if (lower.includes("시간") || lower.includes("언제")) {
+        answer = "사건은 밤 12시 25분에 발생했습니다.";
     }
+    else if (lower.includes("장소") || lower.includes("숭례문")) {
+        answer = "사건 장소는 숭례문이며, 내부 구조를 아는 사람이 접근하기 유리합니다.";
+    }
+    else if (lower.includes("접근") || lower.includes("사다리")) {
+        answer = "범인은 사다리를 이용해 몰래 침입한 것으로 보입니다.";
+    }
+    else if (lower.includes("동기") || lower.includes("분노")) {
+        answer = "일부 용의자는 문화재 관리 시스템에 강한 불만을 가지고 있었습니다.";
+    }
+    else if (lower.includes("문자") || lower.includes("메시지")) {
+        answer = "사건 전 감정적으로 격한 표현이 담긴 문자가 확인됩니다.";
+    }
+    else if (lower.includes("cctv") || lower.includes("택시") || lower.includes("동선")) {
+        answer = "사건 전후로 수상한 이동 동선이 CCTV에 포착되었습니다.";
+    }
+    else if (lower.includes("소방") || lower.includes("전문") || lower.includes("불")) {
+        answer = "범인은 화재와 방재 시스템에 대한 이해가 있었을 가능성이 있습니다.";
+    }
+
+    addMessage(answer, "bot");
+}
+
+function useHint() {
+    if (hintUsed) {
+        addMessage("힌트는 이미 사용되었습니다.", "bot");
+        return;
+    }
+    hintUsed = true;
+    addMessage(
+        "힌트: 아직 질문하지 않은 단서의 범주가 남아 있을 수 있습니다.",
+        "bot"
+    );
 }
 </script>
 
 </body>
 </html>
-
