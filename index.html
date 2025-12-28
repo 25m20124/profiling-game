@@ -65,22 +65,20 @@ button {
 🕵️ 숭례문 화재 사건 프로파일링
 
 한밤중, 국보 숭례문에서 방화로 추정되는 화재가 발생했습니다.  
-당신은 질문을 통해 단서를 수집하고  
-사건의 전말을 추리해야 합니다.
+질문을 통해 단서를 얻을 수 있지만,  
+<b>단서는 단 1번만 제공됩니다.</b>
 
-힌트는 <b>단 1회</b>만 사용할 수 있습니다.  
-질문은 <b>한 번에 하나씩</b>만 가능합니다.
+신중하게 질문하세요.
     </div>
 </div>
 
 <div id="inputBox">
     <input id="userInput" placeholder="질문을 입력하세요">
     <button onclick="send()">전송</button>
-    <button id="hintBtn" onclick="useHint()">힌트</button>
 </div>
 
 <script>
-let hintUsed = false;
+let clueUsed = false; // ❗ 단서 제공 여부 (핵심)
 
 function addMessage(text, cls) {
     const chat = document.getElementById("chat");
@@ -96,63 +94,51 @@ function send() {
     const q = input.value.trim();
     if (!q) return;
 
-    // ❗ 한 번에 질문 1개만 허용
-    const questionCount = (q.match(/\?/g) || []).length;
-    if (questionCount >= 2) {
-        addMessage(q, "user");
-        addMessage("질문은 한 번에 하나씩만 해주세요.", "bot");
-        input.value = "";
-        return;
-    }
-
     addMessage(q, "user");
     input.value = "";
 
-    const lower = q.toLowerCase();
-    let answer = "그 질문에 해당하는 단서는 확인되지 않았습니다.";
+    // ❗ 이미 단서를 제공했다면 더 이상 답변하지 않음
+    if (clueUsed) {
+        addMessage(
+            "더 이상의 단서는 제공되지 않습니다. 수집한 정보로 범인을 추리하세요.",
+            "bot"
+        );
+        return;
+    }
 
+    const lower = q.toLowerCase();
+    let answer = null;
+
+    // ❗ 단서가 되는 질문들
     if (lower.includes("시간") || lower.includes("언제")) {
-        answer = "화재는 밤 12시 25분경 발생한 것으로 확인됩니다.";
+        answer = "화재는 밤 12시 25분경 발생한 것으로 추정됩니다.";
     }
     else if (lower.includes("장소") || lower.includes("숭례문")) {
-        answer = "사건 장소는 숭례문이며, 내부 구조를 아는 사람에게 유리합니다.";
+        answer = "사건 장소는 숭례문이며, 내부 구조를 아는 인물에게 유리합니다.";
+    }
+    else if (lower.includes("cctv") || lower.includes("택시") || lower.includes("동선")) {
+        answer = "사건 전후, 수상한 이동 동선이 CCTV에 포착되었습니다.";
     }
     else if (lower.includes("사다리") || lower.includes("침입")) {
         answer = "범인은 사다리를 이용해 외부에서 몰래 접근했습니다.";
-    }
-    else if (lower.includes("동기") || lower.includes("불만")) {
-        answer = "일부 용의자는 문화재 관리 시스템에 강한 불만을 가지고 있었습니다.";
-    }
-    else if (lower.includes("문자") || lower.includes("메시지")) {
-        answer = "사건 전 감정적으로 격한 표현이 담긴 문자가 확인됩니다.";
-    }
-    else if (lower.includes("cctv") || lower.includes("택시") || lower.includes("동선")) {
-        answer = "사건 전후로 수상한 이동 동선이 CCTV에 포착되었습니다.";
     }
     else if (lower.includes("소방") || lower.includes("불") || lower.includes("전문")) {
         answer = "범인은 화재와 방재 시스템에 대한 이해가 있었을 가능성이 있습니다.";
     }
 
-    addMessage(answer, "bot");
-}
-
-function useHint() {
-    if (hintUsed) return;
-
-    hintUsed = true;
-
-    addMessage(
-        "힌트: 범인은 사건 장소에 접근하는 데 있어 특별한 제약이 적은 인물일 수 있습니다.",
-        "bot"
-    );
-
-    const btn = document.getElementById("hintBtn");
-    btn.disabled = true;
-    btn.innerText = "힌트 사용 완료";
-    btn.style.opacity = "0.5";
-    btn.style.cursor = "not-allowed";
+    // ❗ 단서성 질문이면 1회 제공 후 차단
+    if (answer) {
+        clueUsed = true;
+        addMessage(answer, "bot");
+    } else {
+        addMessage(
+            "그 질문은 단서를 제공하지 않습니다. 질문을 다시 생각해 보세요.",
+            "bot"
+        );
+    }
 }
 </script>
 
 </body>
 </html>
+
