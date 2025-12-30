@@ -13,10 +13,6 @@ body {
     padding: 40px;
 }
 
-h1 {
-    margin-bottom: 25px;
-}
-
 button {
     display: block;
     width: 90%;
@@ -59,49 +55,39 @@ button:disabled {
 <body>
 
 <h1>숭례문 프로파일링 단서</h1>
-<p>각 단서는 한 번만 확인할 수 있습니다.</p>
+<p>힌트는 전체에서 단 한 번만 사용할 수 있습니다.</p>
 
-<button onclick="showFact(0, this)">
-최수진이 택시를 타고 간 CCTV 촬영본
-</button>
-
-<button onclick="showFact(1, this)">
-최수진의 숭례문 화재 대응 훈련 이력서
-</button>
-
-<button onclick="showFact(2, this)">
-김미영과 최수진과의 인터뷰
-</button>
-
-<button onclick="showFact(3, this)">
-한지훈의 목조 건축물 열확산 시뮬레이션 (최수진 노트북)
-</button>
-
-<button onclick="showFact(4, this)">
-최수진과 최수정의 문자 기록
-</button>
+<button onclick="useHint(0)">최수진이 택시를 타고 간 CCTV 촬영본</button>
+<button onclick="useHint(1)">최수진의 숭례문 화재 대응 훈련 이력서</button>
+<button onclick="useHint(2)">김미영과 최수진과의 인터뷰</button>
+<button onclick="useHint(3)">한지훈의 목조 건축물 열확산 시뮬레이션 (최수진 노트북)</button>
+<button onclick="useHint(4)">최수진과 최수정의 문자 기록</button>
 
 <div id="result"></div>
 
 <script>
+let used = false;
+
 const facts = [
     "알 수 있는 사실: 촬영된 인물의 기본적인 신체적 특징을 일부 짐작할 수 있다.",
-
     "알 수 있는 사실: 화재 대응과 관련된 내용을 접해 본 경험이 있었음을 추정할 수 있다.",
-
     "알 수 있는 사실: 방재 체계의 미흡한 부분이 언급되고 있음을 확인할 수 있다.",
-
     "알 수 있는 사실: 목조 건축물의 열 확산과 관련된 자료를 살펴본 흔적이 남아 있다.",
-
     "알 수 있는 사실: 사건 전후의 심리 상태 변화를 짐작하게 하는 표현이 포함되어 있다."
 ];
 
-function showFact(index, button) {
-    button.disabled = true;
+function useHint(index) {
+    if (used) return;
+
+    used = true;
 
     const result = document.getElementById("result");
     result.style.display = "block";
     result.innerText = facts[index];
+
+    // 모든 버튼 비활성화
+    const buttons = document.querySelectorAll("button");
+    buttons.forEach(btn => btn.disabled = true);
 }
 </script>
 
