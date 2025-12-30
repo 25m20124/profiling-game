@@ -2,153 +2,79 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>숭례문 프로파일링</title>
+<title>힌트 제공 시스템</title>
 
 <style>
 body {
-    margin: 0;
     background-color: #0f0f0f;
     color: #eaeaea;
     font-family: Arial, sans-serif;
-}
-
-#chat {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
-    padding-bottom: 180px;
-}
-
-.message {
-    margin: 12px 0;
-    line-height: 1.6;
-    white-space: pre-line;
-}
-
-.user {
-    text-align: right;
-    color: #9cdcfe;
-}
-
-.bot {
-    text-align: left;
-    color: #d4d4d4;
-}
-
-#controls {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: #111;
-    padding: 15px;
-    box-sizing: border-box;
-    border-top: 1px solid #333;
+    text-align: center;
+    padding: 40px;
 }
 
 button {
-    padding: 10px 14px;
-    margin: 6px;
-    font-size: 15px;
+    padding: 15px 30px;
+    font-size: 18px;
     cursor: pointer;
-    background: #222;
-    color: #fff;
-    border: 1px solid #555;
-    border-radius: 6px;
-}
-
-button:hover {
-    background: #333;
+    border: none;
+    border-radius: 8px;
+    background-color: #ff5c5c;
+    color: white;
 }
 
 button:disabled {
-    opacity: 0.4;
+    background-color: gray;
     cursor: not-allowed;
+}
+
+#hintBox {
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px solid #555;
+    border-radius: 10px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    display: none;
+    background-color: #1a1a1a;
 }
 </style>
 </head>
 
 <body>
 
-<div id="chat">
-    <div class="message bot">
-🕵️ 숭례문 화재 사건 프로파일링
+<h1>숭례문 사건 힌트 시스템</h1>
+<p>⚠ 힌트는 단 한 번만 사용할 수 있습니다.</p>
 
-한밤중, 국보 숭례문에서 방화로 추정되는 화재가 발생했습니다.
+<button id="hintBtn" onclick="showHint()">힌트 사용</button>
 
-아래 버튼 중 <b>하나만 선택</b>하여 단서를 얻을 수 있습니다.  
-단서는 단 1번만 제공됩니다.
-
-신중하게 선택하세요.
-    </div>
-</div>
-
-<div id="controls">
-    <button onclick="ask('time')">사건 발생 시간</button>
-    <button onclick="ask('place')">사건 장소 정보</button>
-    <button onclick="ask('route')">이동 동선</button>
-    <button onclick="ask('entry')">침입 방법</button>
-    <button onclick="ask('skill')">화재 전문성</button>
-</div>
+<div id="hintBox"></div>
 
 <script>
-let clueUsed = false;
+let used = false;
 
-function addMessage(text, cls) {
-    const chat = document.getElementById("chat");
-    const div = document.createElement("div");
-    div.className = "message " + cls;
-    div.innerText = text;
-    chat.appendChild(div);
-    window.scrollTo(0, document.body.scrollHeight);
-}
+const hints = [
+    "CCTV 영상에서는 택시를 이용한 인물의 성별만 파악할 수 있다.",
+    "최수진은 숭례문 화재 대응 훈련 이력을 통해 방재 관련 지식을 갖고 있었다.",
+    "김미영과의 인터뷰 내용은 방재 시스템의 부실함을 드러내며, 의심이 강화되는 계기가 된다.",
+    "한지훈의 목조 건축물 열확산 시뮬레이션 자료는 최수진의 노트북에서 발견되었다.",
+    "문자 기록을 통해 최수진의 심리 상태가 평소와 다르게 불안정했음을 추정할 수 있다."
+];
 
-function disableButtons() {
-    document.querySelectorAll("button").forEach(btn => btn.disabled = true);
-}
+function showHint() {
+    if (used) return;
 
-function ask(type) {
-    if (clueUsed) {
-        addMessage("이미 단서를 사용했습니다. 수집한 정보로 범인을 추리하세요.", "bot");
-        return;
-    }
+    used = true;
+    document.getElementById("hintBtn").disabled = true;
 
-    clueUsed = true;
-    disableButtons();
-
-    let answer = "";
-
-    switch (type) {
-        case "time":
-            addMessage("사건 발생 시간", "user");
-            answer = "화재는 밤 12시 25분경 발생한 것으로 추정됩니다.";
-            break;
-
-        case "place":
-            addMessage("사건 장소 정보", "user");
-            answer = "사건 장소는 숭례문이며, 내부 구조를 잘 아는 인물에게 유리한 환경입니다.";
-            break;
-
-        case "route":
-            addMessage("이동 동선", "user");
-            answer = "사건 전후 CCTV에서 수상한 이동 동선이 포착되었습니다.";
-            break;
-
-        case "entry":
-            addMessage("침입 방법", "user");
-            answer = "범인은 사다리를 이용해 외부에서 몰래 접근한 것으로 보입니다.";
-            break;
-
-        case "skill":
-            addMessage("화재 전문성", "user");
-            answer = "범인은 화재와 방재 시스템에 대한 이해가 있었을 가능성이 큽니다.";
-            break;
-    }
-
-    addMessage(answer, "bot");
+    const randomHint = hints[Math.floor(Math.random() * hints.length)];
+    const box = document.getElementById("hintBox");
+    box.style.display = "block";
+    box.innerText = "힌트: " + randomHint;
 }
 </script>
 
 </body>
 </html>
-
 
