@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>숭례문 사건 단서 시스템</title>
+<title>프로파일링 단서 시스템</title>
 
 <style>
 body {
@@ -20,9 +20,9 @@ h1 {
 button {
     display: block;
     width: 90%;
-    max-width: 650px;
-    margin: 10px auto;
-    padding: 15px;
+    max-width: 700px;
+    margin: 12px auto;
+    padding: 16px;
     font-size: 16px;
     border: none;
     border-radius: 10px;
@@ -43,7 +43,7 @@ button:disabled {
 #result {
     margin-top: 30px;
     padding: 25px;
-    max-width: 700px;
+    max-width: 750px;
     margin-left: auto;
     margin-right: auto;
     background-color: #1a1a1a;
@@ -51,51 +51,57 @@ button:disabled {
     border: 1px solid #555;
     display: none;
     font-size: 18px;
+    line-height: 1.6;
 }
 </style>
 </head>
 
 <body>
 
-<h1>숭례문 사건 단서 선택</h1>
+<h1>숭례문 프로파일링 단서</h1>
 <p>각 단서는 한 번만 확인할 수 있습니다.</p>
 
-<button onclick="showAnswer(0, this)">
+<button onclick="showFact(0, this)">
 최수진이 택시를 타고 간 CCTV 촬영본
 </button>
 
-<button onclick="showAnswer(1, this)">
+<button onclick="showFact(1, this)">
 최수진의 숭례문 화재 대응 훈련 이력서
 </button>
 
-<button onclick="showAnswer(2, this)">
+<button onclick="showFact(2, this)">
 김미영과 최수진과의 인터뷰
 </button>
 
-<button onclick="showAnswer(3, this)">
+<button onclick="showFact(3, this)">
 한지훈의 목조 건축물 열확산 시뮬레이션 (최수진 노트북)
 </button>
 
-<button onclick="showAnswer(4, this)">
+<button onclick="showFact(4, this)">
 최수진과 최수정의 문자 기록
 </button>
 
 <div id="result"></div>
 
 <script>
-const answers = [
+const facts = [
     "알 수 있는 사실: 촬영된 인물의 기본적인 신체적 특징을 일부 짐작할 수 있다.",
+
     "알 수 있는 사실: 화재 대응과 관련된 내용을 접해 본 경험이 있었음을 추정할 수 있다.",
+
     "알 수 있는 사실: 방재 체계의 미흡한 부분이 언급되고 있음을 확인할 수 있다.",
+
     "알 수 있는 사실: 목조 건축물의 열 확산과 관련된 자료를 살펴본 흔적이 남아 있다.",
+
     "알 수 있는 사실: 사건 전후의 심리 상태 변화를 짐작하게 하는 표현이 포함되어 있다."
 ];
 
-function showAnswer(index, button) {
+function showFact(index, button) {
     button.disabled = true;
-    const box = document.getElementById("result");
-    box.style.display = "block";
-    box.innerText = answers[index];
+
+    const result = document.getElementById("result");
+    result.style.display = "block";
+    result.innerText = facts[index];
 }
 </script>
 
