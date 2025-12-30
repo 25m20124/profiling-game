@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>힌트 제공 시스템</title>
+<title>숭례문 사건 단서 시스템</title>
 
 <style>
 body {
@@ -13,65 +13,90 @@ body {
     padding: 40px;
 }
 
+h1 {
+    margin-bottom: 30px;
+}
+
 button {
-    padding: 15px 30px;
-    font-size: 18px;
-    cursor: pointer;
+    display: block;
+    width: 90%;
+    max-width: 600px;
+    margin: 10px auto;
+    padding: 15px;
+    font-size: 16px;
     border: none;
-    border-radius: 8px;
-    background-color: #ff5c5c;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #3a3a3a;
     color: white;
 }
 
+button:hover:enabled {
+    background-color: #ff5c5c;
+}
+
 button:disabled {
-    background-color: gray;
+    background-color: #555;
     cursor: not-allowed;
 }
 
-#hintBox {
+#result {
     margin-top: 30px;
-    padding: 20px;
-    border: 1px solid #555;
-    border-radius: 10px;
+    padding: 25px;
     max-width: 700px;
     margin-left: auto;
     margin-right: auto;
-    display: none;
     background-color: #1a1a1a;
+    border-radius: 12px;
+    border: 1px solid #555;
+    display: none;
+    font-size: 18px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>숭례문 사건 힌트 시스템</h1>
-<p>⚠ 힌트는 단 한 번만 사용할 수 있습니다.</p>
+<h1>숭례문 사건 단서 선택</h1>
+<p>각 단서는 한 번만 열 수 있습니다.</p>
 
-<button id="hintBtn" onclick="showHint()">힌트 사용</button>
+<button onclick="showAnswer(0, this)">
+최수진이 택시를 타고 간 CCTV 촬영본
+</button>
 
-<div id="hintBox"></div>
+<button onclick="showAnswer(1, this)">
+최수진의 숭례문 화재 대응 훈련 이력서
+</button>
+
+<button onclick="showAnswer(2, this)">
+김미영과 최수진과의 인터뷰
+</button>
+
+<button onclick="showAnswer(3, this)">
+한지훈의 목조 건축물 열확산 시뮬레이션 (최수진 노트북)
+</button>
+
+<button onclick="showAnswer(4, this)">
+최수진과 최수정의 문자 기록
+</button>
+
+<div id="result"></div>
 
 <script>
-let used = false;
-
-const hints = [
-    "CCTV 영상에서는 택시를 이용한 인물의 성별만 파악할 수 있다.",
-    "최수진은 숭례문 화재 대응 훈련 이력을 통해 방재 관련 지식을 갖고 있었다.",
-    "김미영과의 인터뷰 내용은 방재 시스템의 부실함을 드러내며, 의심이 강화되는 계기가 된다.",
-    "한지훈의 목조 건축물 열확산 시뮬레이션 자료는 최수진의 노트북에서 발견되었다.",
-    "문자 기록을 통해 최수진의 심리 상태가 평소와 다르게 불안정했음을 추정할 수 있다."
+const answers = [
+    "알 수 있는 것: CCTV 영상으로 확인 가능한 정보는 '성별'뿐이다.",
+    "알 수 있는 것: 최수진은 숭례문 화재 대응 훈련을 받은 이력이 있으며, 방재 관련 지식을 보유하고 있다.",
+    "알 수 있는 것: 인터뷰를 통해 방재 시스템의 부실함이 드러나며, 이것이 김미영의 의심을 강화하는 계기가 된다.",
+    "알 수 있는 것: 목조 건축물의 열 확산 구조에 대한 전문적 지식이 최수진의 노트북에 존재한다.",
+    "알 수 있는 것: 문자 기록을 통해 최수진의 심리 상태가 불안정했음을 추정할 수 있다."
 ];
 
-function showHint() {
-    if (used) return;
+function showAnswer(index, button) {
+    button.disabled = true;
 
-    used = true;
-    document.getElementById("hintBtn").disabled = true;
-
-    const randomHint = hints[Math.floor(Math.random() * hints.length)];
-    const box = document.getElementById("hintBox");
+    const box = document.getElementById("result");
     box.style.display = "block";
-    box.innerText = "힌트: " + randomHint;
+    box.innerText = answers[index];
 }
 </script>
 
