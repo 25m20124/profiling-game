@@ -16,7 +16,7 @@ body {
     max-width: 800px;
     margin: auto;
     padding: 20px;
-    padding-bottom: 120px;
+    padding-bottom: 180px;
 }
 
 .message {
@@ -35,25 +35,34 @@ body {
     color: #d4d4d4;
 }
 
-#inputBox {
+#controls {
     position: fixed;
     bottom: 0;
     width: 100%;
     background: #111;
     padding: 15px;
     box-sizing: border-box;
-}
-
-input {
-    width: 65%;
-    padding: 10px;
-    font-size: 16px;
+    border-top: 1px solid #333;
 }
 
 button {
-    padding: 10px;
-    font-size: 16px;
-    margin-left: 5px;
+    padding: 10px 14px;
+    margin: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    background: #222;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 6px;
+}
+
+button:hover {
+    background: #333;
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }
 </style>
 </head>
@@ -64,17 +73,21 @@ button {
     <div class="message bot">
 🕵️ 숭례문 화재 사건 프로파일링
 
-한밤중, 국보 숭례문에서 방화로 추정되는 화재가 발생했습니다.  
-질문을 통해 단서를 얻을 수 있지만,  
-<b>단서는 단 1번만 제공됩니다.</b>
+한밤중, 국보 숭례문에서 방화로 추정되는 화재가 발생했습니다.
 
-신중하게 질문하세요.
+아래 버튼 중 <b>하나만 선택</b>하여 단서를 얻을 수 있습니다.  
+단서는 단 1번만 제공됩니다.
+
+신중하게 선택하세요.
     </div>
 </div>
 
-<div id="inputBox">
-    <input id="userInput" placeholder="질문을 입력하세요">
-    <button onclick="send()">전송</button>
+<div id="controls">
+    <button onclick="ask('time')">사건 발생 시간</button>
+    <button onclick="ask('place')">사건 장소 정보</button>
+    <button onclick="ask('route')">이동 동선</button>
+    <button onclick="ask('entry')">침입 방법</button>
+    <button onclick="ask('skill')">화재 전문성</button>
 </div>
 
 <script>
@@ -89,78 +102,49 @@ function addMessage(text, cls) {
     window.scrollTo(0, document.body.scrollHeight);
 }
 
-function send() {
-    const input = document.getElementById("userInput");
-    const q = input.value.trim();
-    if (!q) return;
+function disableButtons() {
+    document.querySelectorAll("button").forEach(btn => btn.disabled = true);
+}
 
-    addMessage(q, "user");
-    input.value = "";
-
+function ask(type) {
     if (clueUsed) {
-        addMessage(
-            "더 이상의 단서는 제공되지 않습니다. 수집한 정보로 범인을 추리하세요.",
-            "bot"
-        );
+        addMessage("이미 단서를 사용했습니다. 수집한 정보로 범인을 추리하세요.", "bot");
         return;
     }
 
-    const lower = q.toLowerCase();
+    clueUsed = true;
+    disableButtons();
 
-    // ✅ 단서 그룹 정의
-    const clues = [
-        {
-            keywords: ["시간", "언제"],
-            answer: "화재는 밤 12시 25분경 발생한 것으로 추정됩니다."
-        },
-        {
-            keywords: ["장소", "숭례문"],
-            answer: "사건 장소는 숭례문이며, 내부 구조를 아는 인물에게 유리합니다."
-        },
-        {
-            keywords: ["cctv", "택시", "동선"],
-            answer: "사건 전후, 수상한 이동 동선이 CCTV에 포착되었습니다."
-        },
-        {
-            keywords: ["사다리", "침입"],
-            answer: "범인은 사다리를 이용해 외부에서 몰래 접근했습니다."
-        },
-        {
-            keywords: ["소방", "불", "전문"],
-            answer: "범인은 화재와 방재 시스템에 대한 이해가 있었을 가능성이 있습니다."
-        }
-    ];
+    let answer = "";
 
-    // ✅ 어떤 단서가 감지됐는지 체크
-    let matched = [];
+    switch (type) {
+        case "time":
+            addMessage("사건 발생 시간", "user");
+            answer = "화재는 밤 12시 25분경 발생한 것으로 추정됩니다.";
+            break;
 
-    for (let clue of clues) {
-        if (clue.keywords.some(k => lower.includes(k))) {
-            matched.push(clue);
-        }
+        case "place":
+            addMessage("사건 장소 정보", "user");
+            answer = "사건 장소는 숭례문이며, 내부 구조를 잘 아는 인물에게 유리한 환경입니다.";
+            break;
+
+        case "route":
+            addMessage("이동 동선", "user");
+            answer = "사건 전후 CCTV에서 수상한 이동 동선이 포착되었습니다.";
+            break;
+
+        case "entry":
+            addMessage("침입 방법", "user");
+            answer = "범인은 사다리를 이용해 외부에서 몰래 접근한 것으로 보입니다.";
+            break;
+
+        case "skill":
+            addMessage("화재 전문성", "user");
+            answer = "범인은 화재와 방재 시스템에 대한 이해가 있었을 가능성이 큽니다.";
+            break;
     }
 
-    // ✅ 2개 이상이면 차단
-    if (matched.length >= 2) {
-        addMessage(
-            "⚠ 하나의 질문에는 하나의 단서만 포함할 수 있습니다.\n하나씩 나누어 질문하세요.",
-            "bot"
-        );
-        return;
-    }
-
-    // ✅ 1개일 때만 단서 제공
-    if (matched.length === 1) {
-        clueUsed = true;
-        addMessage(matched[0].answer, "bot");
-        return;
-    }
-
-    // ❗ 해당 없음
-    addMessage(
-        "그 질문은 단서를 제공하지 않습니다. 질문을 다시 생각해 보세요.",
-        "bot"
-    );
+    addMessage(answer, "bot");
 }
 </script>
 
