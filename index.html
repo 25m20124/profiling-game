@@ -14,13 +14,13 @@ body {
 }
 
 h1 {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 button {
     display: block;
     width: 90%;
-    max-width: 600px;
+    max-width: 650px;
     margin: 10px auto;
     padding: 15px;
     font-size: 16px;
@@ -58,7 +58,7 @@ button:disabled {
 <body>
 
 <h1>숭례문 사건 단서 선택</h1>
-<p>각 단서는 한 번만 열 수 있습니다.</p>
+<p>각 단서는 한 번만 확인할 수 있습니다.</p>
 
 <button onclick="showAnswer(0, this)">
 최수진이 택시를 타고 간 CCTV 촬영본
@@ -84,16 +84,15 @@ button:disabled {
 
 <script>
 const answers = [
-    "알 수 있는 것: CCTV 영상으로 확인 가능한 정보는 '성별'뿐이다.",
-    "알 수 있는 것: 최수진은 숭례문 화재 대응 훈련을 받은 이력이 있으며, 방재 관련 지식을 보유하고 있다.",
-    "알 수 있는 것: 인터뷰를 통해 방재 시스템의 부실함이 드러나며, 이것이 김미영의 의심을 강화하는 계기가 된다.",
-    "알 수 있는 것: 목조 건축물의 열 확산 구조에 대한 전문적 지식이 최수진의 노트북에 존재한다.",
-    "알 수 있는 것: 문자 기록을 통해 최수진의 심리 상태가 불안정했음을 추정할 수 있다."
+    "알 수 있는 사실: 촬영된 인물의 기본적인 신체적 특징을 일부 짐작할 수 있다.",
+    "알 수 있는 사실: 화재 대응과 관련된 내용을 접해 본 경험이 있었음을 추정할 수 있다.",
+    "알 수 있는 사실: 방재 체계의 미흡한 부분이 언급되고 있음을 확인할 수 있다.",
+    "알 수 있는 사실: 목조 건축물의 열 확산과 관련된 자료를 살펴본 흔적이 남아 있다.",
+    "알 수 있는 사실: 사건 전후의 심리 상태 변화를 짐작하게 하는 표현이 포함되어 있다."
 ];
 
 function showAnswer(index, button) {
     button.disabled = true;
-
     const box = document.getElementById("result");
     box.style.display = "block";
     box.innerText = answers[index];
